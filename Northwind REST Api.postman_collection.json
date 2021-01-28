@@ -1,0 +1,484 @@
+{
+	"info": {
+		"_postman_id": "d2340b52-ae21-4c13-bf1d-7e073ab7faa0",
+		"name": "Northwind REST Api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "cutomers_post",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/customers/post?customerId=Niks1100&companyName=Datagrokr&contactName=Nikhil Sharma&contactTitle=Mr.&address=Ahmedabad&city=Ahmedabad&region=Bodakdev&postalCode=380054&country=India&phone=1234567890&fax=hdhdhdhsjs",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"customers",
+						"post"
+					],
+					"query": [
+						{
+							"key": "customerId",
+							"value": "Niks1100"
+						},
+						{
+							"key": "companyName",
+							"value": "Datagrokr"
+						},
+						{
+							"key": "contactName",
+							"value": "Nikhil Sharma"
+						},
+						{
+							"key": "contactTitle",
+							"value": "Mr."
+						},
+						{
+							"key": "address",
+							"value": "Ahmedabad"
+						},
+						{
+							"key": "city",
+							"value": "Ahmedabad"
+						},
+						{
+							"key": "region",
+							"value": "Bodakdev"
+						},
+						{
+							"key": "postalCode",
+							"value": "380054"
+						},
+						{
+							"key": "country",
+							"value": "India"
+						},
+						{
+							"key": "phone",
+							"value": "1234567890"
+						},
+						{
+							"key": "fax",
+							"value": "hdhdhdhsjs"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "customers_get",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/customers/get?customerId=Niks1100&contactName=Nikhil Sharma",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"customers",
+						"get"
+					],
+					"query": [
+						{
+							"key": "customerId",
+							"value": "Niks1100"
+						},
+						{
+							"key": "contactName",
+							"value": "Nikhil Sharma"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "customers_put",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/customers/put?customerId=Niks1100&companyName=Datagrokr&contactName=Nikhil Sharma&contactTitle=Mr.&address=Ahmedabad&city=Ahmedabad&region=Bodakdev&postalCode=380054&country=India&phone=1234567890&fax=hdhdhdhsjs",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"customers",
+						"put"
+					],
+					"query": [
+						{
+							"key": "customerId",
+							"value": "Niks1100"
+						},
+						{
+							"key": "companyName",
+							"value": "Datagrokr"
+						},
+						{
+							"key": "contactName",
+							"value": "Nikhil Sharma"
+						},
+						{
+							"key": "contactTitle",
+							"value": "Mr."
+						},
+						{
+							"key": "address",
+							"value": "Ahmedabad"
+						},
+						{
+							"key": "city",
+							"value": "Ahmedabad"
+						},
+						{
+							"key": "region",
+							"value": "Bodakdev"
+						},
+						{
+							"key": "postalCode",
+							"value": "380054"
+						},
+						{
+							"key": "country",
+							"value": "India"
+						},
+						{
+							"key": "phone",
+							"value": "1234567890"
+						},
+						{
+							"key": "fax",
+							"value": "hdhdhdhsjs"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "products_get",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/products/get?productId=1",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"products",
+						"get"
+					],
+					"query": [
+						{
+							"key": "productId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "products_post",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/products/post?productId=999&productName=Football&supplierId=3&categoryId=2&quantityPerUnit=1&unitPrice=500&unitsInStock=100&unitsOnOrder=20&recorderLevel=10000&discontinued=0",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"products",
+						"post"
+					],
+					"query": [
+						{
+							"key": "productId",
+							"value": "999"
+						},
+						{
+							"key": "productName",
+							"value": "Football"
+						},
+						{
+							"key": "supplierId",
+							"value": "3"
+						},
+						{
+							"key": "categoryId",
+							"value": "2"
+						},
+						{
+							"key": "quantityPerUnit",
+							"value": "1"
+						},
+						{
+							"key": "unitPrice",
+							"value": "500"
+						},
+						{
+							"key": "unitsInStock",
+							"value": "100"
+						},
+						{
+							"key": "unitsOnOrder",
+							"value": "20"
+						},
+						{
+							"key": "recorderLevel",
+							"value": "10000"
+						},
+						{
+							"key": "discontinued",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "products_put",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/products/put?productId=999&unitsOnOrder=30",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"products",
+						"put"
+					],
+					"query": [
+						{
+							"key": "productId",
+							"value": "999"
+						},
+						{
+							"key": "unitsOnOrder",
+							"value": "30"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "orders_get",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/orders/get?orderId=11077",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"orders",
+						"get"
+					],
+					"query": [
+						{
+							"key": "orderId",
+							"value": "11077"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "orders_post",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/orders/post?orderId=11077&customerId=Niks1100&employeeId=2&orderDate=2021-01-28 12:13:07.635849&requiredDate=2021-01-28 12:13:07.635849&shippedDate=2021-01-28 12:13:07.635849&shipVia=1&freight=9.01&shipName=Hello&shipAddress=Hello Address&shipCity=Ahmedabad&shipRegion=Bodakdev&shipPostalCode=800929&shipCountry=India",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"orders",
+						"post"
+					],
+					"query": [
+						{
+							"key": "orderId",
+							"value": "11077"
+						},
+						{
+							"key": "customerId",
+							"value": "Niks1100"
+						},
+						{
+							"key": "employeeId",
+							"value": "2"
+						},
+						{
+							"key": "orderDate",
+							"value": "2021-01-28 12:13:07.635849"
+						},
+						{
+							"key": "requiredDate",
+							"value": "2021-01-28 12:13:07.635849"
+						},
+						{
+							"key": "shippedDate",
+							"value": "2021-01-28 12:13:07.635849"
+						},
+						{
+							"key": "shipVia",
+							"value": "1"
+						},
+						{
+							"key": "freight",
+							"value": "9.01"
+						},
+						{
+							"key": "shipName",
+							"value": "Hello"
+						},
+						{
+							"key": "shipAddress",
+							"value": "Hello Address"
+						},
+						{
+							"key": "shipCity",
+							"value": "Ahmedabad"
+						},
+						{
+							"key": "shipRegion",
+							"value": "Bodakdev"
+						},
+						{
+							"key": "shipPostalCode",
+							"value": "800929"
+						},
+						{
+							"key": "shipCountry",
+							"value": "India"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "orders_put",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/orders/put?orderId=11077&shipPostalCode=380054",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"orders",
+						"put"
+					],
+					"query": [
+						{
+							"key": "orderId",
+							"value": "11077"
+						},
+						{
+							"key": "shipPostalCode",
+							"value": "380054"
+						},
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "order_history",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:5000/orderhistory?customerId=ALFKI",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000",
+					"path": [
+						"orderhistory"
+					],
+					"query": [
+						{
+							"key": "customerId",
+							"value": "ALFKI"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
