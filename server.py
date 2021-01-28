@@ -13,8 +13,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
 
-# engine = create_engine("mysql://root:@127.0.0.1:3306/Northwind")
-
+'''
+ORM Models
+'''
 class BytesField(fields.Field):
     def _validate(self, value):
         if not isinstance(value, bytes):
@@ -136,8 +137,6 @@ class OrdersSchema(ModelSchema):
     shipRegion = fields.Str()
     shipPostalCode = fields.Str()
     shipCountry = fields.Str()
-    
-''' Other schema definitions here'''
 
 def dict_factory(cursor, row):
     d = {}
@@ -145,6 +144,9 @@ def dict_factory(cursor, row):
         d[col[0]] = row[idx]
     return d
 
+'''
+View (Logic)
+'''
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -417,9 +419,36 @@ def putOrders():
         return make_response({'error':'Some error'}, 400)
 
 
-# ''' Order history of a given customer '''
-# @app.route('/orderhistory', methods=['GET'])
-# def getOrderHistory():
+''' Order history of a given customer '''
+@app.route('/orderhistory', methods=['GET'])
+def getOrderHistory():
+    query_parameters = request.args
+    query_data = query_parameters.to_dict()
+    customerId_ = query_data['customerId']
 
+    try:
+        customer_data = []
+        order_data = []
+        for c, o in db.session.query(Customers,Orders).filter(Customers.customerId==Orders.customerId).filter(Customers.customerId==customerId_).all():
+            customer_data.append(c)
+            order_data.append(o)
+
+        # Deserializing data
+        customer_data_dict = {}
+        order_data_dict = {}
+        customers_schema = CustomersSchema() # Self Note : Removing many=True made it work
+        orders_schema = OrdersSchema()
+        for i in range(len(customer_data)):
+            customer_data_dict[i] = customers_schema.dump(customer_data[i]) # De-serialize
+            order_data_dict[i] = orders_schema.dump(order_data[i])
+        
+        results = {}
+        for i in range(len(customer_data)):
+            results[i] = {customer_data_dict[i]['customerId']:{'orderId':order_data_dict[i]['orderId'], 'shippedDate':order_data_dict[i]['shippedDate']}}
+
+        return make_response({'data':results}, 200)
+    except Exception as err:
+        pprint(err)
+        return page_not_found(404)
 
 app.run(debug=True)
