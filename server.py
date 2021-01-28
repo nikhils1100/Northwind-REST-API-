@@ -73,7 +73,7 @@ class Products(db.Model):
     supplierId = db.Column(db.Integer)
     categoryId = db.Column(db.Integer)
     quantityPerUnit = db.Column(db.String(25))
-    unitPrice = db.Column(db.Numeric(10,4))
+    shippedDate = db.Column(db.Numeric(10,4))
     unitsInStock = db.Column(db.Integer)
     unitsOnOrder = db.Column(db.Integer)
     recorderLevel = db.Column(db.Integer) # recorder - spellinhg mistake while entering column in mysql
@@ -89,11 +89,53 @@ class ProductsSchema(ModelSchema):
     categoryId = fields.Int()
     supplierId = fields.Int()
     quantityPerUnit = fields.Str()
-    unitPrice = fields.Float()
+    shippedDate = fields.Float()
     unitsInStock = fields.Int()
     unistOnOrder = fields.Int()
     recorderLevel = fields.Int() # recorder - spellinhg mistake while entering column in mysql
     discontinued = fields.Str()
+
+class Orders(db.Model):
+    __tablename__ = "orders"
+
+    def create(self):
+      db.session.add(self)
+      db.session.commit()
+      return self
+
+    orderId = db.Column(db.Integer, primary_key=True)
+    customerId = db.Column(db.String(25))
+    employeeId = db.Column(db.Integer)
+    orderDate = db.Column(db.DateTime)
+    requiredDate = db.Column(db.DateTime)
+    shippedDate = db.Column(db.DateTime)
+    shipVia = db.Column(db.Integer)
+    freight = db.Column(db.Numeric(10,4))
+    shipName = db.Column(db.String(25))
+    shipAddress = db.Column(db.String(25))
+    shipCity = db.Column(db.String(25))
+    shipRegion = db.Column(db.String(25))
+    shipPostalCode = db.Column(db.String(25))
+    shipCountry = db.Column(db.String(25))
+
+class OrdersSchema(ModelSchema):
+    class Meta(ModelSchema.Meta):
+        model = Orders
+        sqla_session = db.session
+    
+    orderId = fields.Int()
+    employeeId = fields.Str()
+    orderDate = fields.DateTime()
+    requiredDate = fields.DateTime()
+    shippedDate = fields.DateTime()
+    shipVia = fields.Int()
+    freight =fields.Float()
+    shipName = fields.Str()
+    shipAddress = fields.Str()
+    shipCity = fields.Str()
+    shipRegion = fields.Str()
+    shipPostalCode = fields.Str()
+    shipCountry = fields.Str()
     
 ''' Other schema definitions here'''
 
@@ -258,8 +300,8 @@ def putProducts():
             product_db.supplierId = query_data['supplierId']
         if 'quantityPerUnit' in query_data:
             product_db.quantityPerUnit = query_data['quantityPerUnit']
-        if 'unitPrice' in query_data:
-            product_db.unitPrice = query_data['unitPrice']
+        if 'shippedDate' in query_data:
+            product_db.shippedDate = query_data['shippedDate']
         if 'unitsInStock' in query_data:
             product_db.unitsInStock = query_data['unitsInStock']
         if 'unitsOnOrder' in query_data:
@@ -279,5 +321,105 @@ def putProducts():
     except Exception as err:
         pprint(err)
         return make_response({'error':'Some error'}, 400)
+
+
+@app.route('/orders/get', methods=['GET'])
+def getOrders():
+    query_parameters = request.args
+    query_data = query_parameters.to_dict()
+    orderId = query_data['orderId']
+
+    try:        
+        data = Orders().query.get(orderId)
+        print(data)
+        
+        order_schema = OrdersSchema() # Self Note : Removing many=True made it work
+        
+        order_data = order_schema.dump(data) # De-serialize
+        
+        return make_response({'data':order_data}, 200)
+    except Exception as err:
+        pprint(err)
+        return page_not_found(404)
+
+
+@app.route('/orders/post', methods=['POST'])
+def postOrders():
+    query_parameters = request.args
+    query_data = query_parameters.to_dict()
+
+    try:
+        order_schema = OrdersSchema()
+        order = order_schema.load(query_data)
+
+        result = order_schema.dump(order.create())
+
+        return make_response({'message' :result},200)
+    except ValidationError as err:
+        pprint(err.messages)
+        message = {'message': err.messages}
+        return make_response(jsonify(message), 400)
+    except Exception as err:
+        pprint(err)
+        return make_response({'error':'Some Error'}, 400)
+
+
+@app.route('/orders/put', methods=['PUT'])
+def putOrders():
+    query_parameters = request.args
+    query_data = query_parameters.to_dict()
+
+    try:
+        
+        orderId = query_data['orderId']
+        order_db = Orders().query.get(orderId)
+        if order_db is None:
+            raise Exception('No such entry in Database')
+
+        if 'orderId' in query_data:
+            order_db.orderId = query_data['orderId']
+        if 'customerId' in query_data:
+            order_db.customerId = query_data['customerId']
+        if 'employeeId' in query_data:
+            order_db.employeeId = query_data['employeeId']
+        if 'orderDate' in query_data:
+            order_db.orderDate = query_data['orderDate']
+        if 'requiredDate' in query_data:
+            order_db.requiredDate = query_data['requiredDate']
+        if 'shippedDate' in query_data:
+            order_db.shippedDate = query_data['shippedDate']
+        if 'shipVia' in query_data:
+            order_db.shipVia = query_data['shipVia']
+        if 'freight' in query_data:
+            order_db.freight = query_data['freight']
+        if 'shipName' in query_data:
+            order_db.shipName = query_data['shipName']
+        if 'shipAddress' in query_data:
+            order_db.shipAddress = query_data['shipAddress']
+        if 'shipCity' in query_data:
+            order_db.shipCity = query_data['shipCity']
+        if 'shipRegion' in query_data:
+            order_db.shipRegion = query_data['shipRegion']
+        if 'shipPostalCode' in query_data:
+            order_db.shipPostalCode = query_data['shipPostalCode']
+        if 'shipCountry' in query_data:
+            order_db.shipCountry = query_data['shipCountry']
+        
+        db.session.add(order_db)
+        db.session.commit()
+        
+        order_schema = OrdersSchema()
+        result = order_schema.dump(order_db)
+        
+        return make_response({'message':'Added Succesfuly', 'data': result},200)
+    except Exception as err:
+        pprint(err)
+        return make_response({'error':'Some error'}, 400)
+
+
+# ''' Order history of a given customer '''
+# @app.route('/orderhistory', methods=['GET'])
+# def getOrderHistory():
+
 
 app.run(debug=True)
