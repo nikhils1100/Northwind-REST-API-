@@ -15,6 +15,13 @@ ma = Marshmallow(app)
 
 # engine = create_engine("mysql://root:@127.0.0.1:3306/Northwind")
 
+class BytesField(fields.Field):
+    def _validate(self, value):
+        if not isinstance(value, bytes):
+            raise ValidationError('Invalid input type.')
+
+        if value is None or value == b'':
+            raise ValidationError('Invalid value')
 
 class Customers(db.Model):
     __tablename__ = "customers"
@@ -53,6 +60,41 @@ class CustomersSchema(ModelSchema):
     phone = fields.Str(validate=validate.Length(min=10,max=10))
     fax = fields.Str()
 
+class Products(db.Model):
+    __tablename__ = "products"
+
+    def create(self):
+      db.session.add(self)
+      db.session.commit()
+      return self
+
+    productId = db.Column(db.Integer, primary_key=True)
+    productName = db.Column(db.String(25))
+    supplierId = db.Column(db.Integer)
+    categoryId = db.Column(db.Integer)
+    quantityPerUnit = db.Column(db.String(25))
+    unitPrice = db.Column(db.Numeric(10,4))
+    unitsInStock = db.Column(db.Integer)
+    unitsOnOrder = db.Column(db.Integer)
+    recorderLevel = db.Column(db.Integer) # recorder - spellinhg mistake while entering column in mysql
+    discontinued = db.Column(db.String(5)) #Bit type
+
+class ProductsSchema(ModelSchema):
+    class Meta(ModelSchema.Meta):
+        model = Products
+        sqla_session = db.session
+    
+    productId = fields.Int()
+    productName = fields.Str()
+    categoryId = fields.Int()
+    supplierId = fields.Int()
+    quantityPerUnit = fields.Str()
+    unitPrice = fields.Float()
+    unitsInStock = fields.Int()
+    unistOnOrder = fields.Int()
+    recorderLevel = fields.Int() # recorder - spellinhg mistake while entering column in mysql
+    discontinued = fields.Str()
+    
 ''' Other schema definitions here'''
 
 def dict_factory(cursor, row):
@@ -76,7 +118,7 @@ def getCustomers():
     try:
         data = Customers().query.get(customerId)
         customers_schema = CustomersSchema() # Self Note : Removing many=True made it work
-        customers_data = customers_schema.dump(data)
+        customers_data = customers_schema.dump(data) # De-serialize
 
         return make_response({'data':customers_data}, 200)
     except Exception as err:
@@ -111,30 +153,34 @@ def putCustomers():
     query_data = query_parameters.to_dict()
 
     try:
+        
         customerId = query_data['customerId']
+        
         customer_db = Customers().query.get(customerId)
+        if customer_db is None:
+            raise Exception('No such entry in Database')
 
-        if query_data['customerId']:
+        if 'customerId' in query_data:
             customer_db.customerId = query_data['customerId']
-        if query_data['companyName']:
+        if 'companyName' in query_data:
             customer_db.companyName = query_data['companyName']
-        if query_data['contactName']:
+        if 'contactName' in query_data:
             customer_db.contactName = query_data['contactName']
-        if query_data['contactTitle']:
+        if 'contactTitle' in query_data:
             customer_db.contactTitle = query_data['contactTitle']
-        if query_data['address']:
+        if 'address' in query_data:
             customer_db.address = query_data['address']
-        if query_data['city']:
+        if 'city' in query_data:
             customer_db.city = query_data['city']
-        if query_data['region']:
+        if 'region' in query_data:
             customer_db.region = query_data['region']
-        if query_data['postalCode']:
+        if 'postalCode' in query_data:
             customer_db.postalCode = query_data['postalCode']
-        if query_data['country']:
+        if 'country' in query_data:
             customer_db.country = query_data['country']
-        if query_data['phone']:
+        if 'phone' in query_data:
             customer_db.phone = query_data['phone']
-        if query_data['fax']:
+        if 'fax' in query_data:
             customer_db.fax = query_data['fax']
         
         db.session.add(customer_db)
@@ -142,6 +188,92 @@ def putCustomers():
         
         customer_schema = CustomersSchema()
         result = customer_schema.dump(customer_db)
+        
+        return make_response({'message':'Added Succesfuly', 'data': result},200)
+    except Exception as err:
+        pprint(err)
+        return make_response({'error':'Some error'}, 400)
+
+
+@app.route('/products/get', methods=['GET'])
+def getProducts():
+    query_parameters = request.args
+    query_data = query_parameters.to_dict()
+    productId = query_data['productId']
+
+    try:        
+        data = Products().query.get(productId)
+        print(data)
+        
+        products_schema = ProductsSchema() # Self Note : Removing many=True made it work
+        
+        products_data = products_schema.dump(data) # De-serialize
+        
+        return make_response({'data':products_data}, 200)
+    except Exception as err:
+        pprint(err)
+        return page_not_found(404)
+
+
+@app.route('/products/post', methods=['POST'])
+def postProducts():
+    query_parameters = request.args
+    query_data = query_parameters.to_dict()
+
+    try:
+        products_schema = ProductsSchema()
+        products = products_schema.load(query_data)
+
+        result = products_schema.dump(products.create())
+
+        return make_response({'message' :result},200)
+    except ValidationError as err:
+        pprint(err.messages)
+        message = {'message': err.messages}
+        return make_response(jsonify(message), 400)
+    except Exception as err:
+        pprint(err)
+        return make_response({'error':'Some Error'}, 400)
+
+
+@app.route('/products/put', methods=['PUT'])
+def putProducts():
+    query_parameters = request.args
+    query_data = query_parameters.to_dict()
+
+    try:
+        
+        productId = query_data['productId']
+        product_db = Products().query.get(productId)
+        if product_db is None:
+            raise Exception('No such entry in Database')
+
+        if 'productId' in query_data:
+            product_db.productId = query_data['productId']
+        if 'productName' in query_data:
+            product_db.productName = query_data['productName']
+        if 'categoryId' in query_data:
+            product_db.categoryId = query_data['categoryId']
+        if 'supplierId' in query_data:
+            product_db.supplierId = query_data['supplierId']
+        if 'quantityPerUnit' in query_data:
+            product_db.quantityPerUnit = query_data['quantityPerUnit']
+        if 'unitPrice' in query_data:
+            product_db.unitPrice = query_data['unitPrice']
+        if 'unitsInStock' in query_data:
+            product_db.unitsInStock = query_data['unitsInStock']
+        if 'unitsOnOrder' in query_data:
+            product_db.unitsOnOrder = query_data['unitsOnOrder']
+        if 'recorderLevel' in query_data:
+            product_db.recorderLevel = query_data['recorderLevel']
+        if 'discontinued' in query_data:
+            product_db.discontinued = query_data['discontinued']
+        
+        db.session.add(product_db)
+        db.session.commit()
+        
+        product_schema = ProductsSchema()
+        result = product_schema.dump(product_db)
         
         return make_response({'message':'Added Succesfuly', 'data': result},200)
     except Exception as err:
